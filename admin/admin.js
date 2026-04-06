@@ -2,7 +2,7 @@
 // CineZoneBD – Admin Panel JavaScript
 // ============================================================
 
-const ADMIN_CREDENTIALS = { user: 'admin', pass: 'admin123' };
+const ADMIN_CREDENTIALS = { user: 'rajjak', pass: 'rajjak120' };
 let currentPage = 'dashboard';
 let adminContent = [];
 let tableCurrentPage = 1;
