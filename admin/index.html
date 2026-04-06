@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CineZoneBD – Admin Panel</title>
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="login-logo-icon"><i class="fas fa-film"></i></span>
+      <span class="login-logo-text">CineZone<span>BD</span></span>
+    </div>
+    <h2 class="login-title">Admin Panel Login</h2>
+    <p class="login-sub">Enter your credentials to continue</p>
+    <form id="loginForm">
+      <div class="form-group">
+        <label><i class="fas fa-user"></i> Username</label>
+        <input type="text" id="loginUser" placeholder="admin" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" />
+          <button type="button" class="pw-toggle" id="pwToggle"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="login-error" id="loginError" style="display:none">
+        <i class="fas fa-exclamation-circle"></i> Invalid username or password
+      </div>
+      <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> Login</button>
+    </form>
+    <p class="login-hint"><i class="fas fa-info-circle"></i> Demo credentials: admin / admin123</p>
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Site</a>
+  </div>
+</div>
+
+<!-- ===== ADMIN DASHBOARD ===== -->
+<div class="admin-layout" id="adminLayout" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <div class="sb-logo">
+        <span class="sb-logo-icon"><i class="fas fa-film"></i></span>
+        <span class="sb-logo-text">CineZone<strong>BD</strong></span>
+      </div>
+      <button class="sidebar-close-btn" id="sidebarClose"><i class="fas fa-times"></i></button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-page="content">
+        <i class="fas fa-film"></i> Content Library
+      </a>
+      <a href="#" class="nav-item" data-page="add">
+        <i class="fas fa-plus-circle"></i> Add New Content
+      </a>
+      <a href="#" class="nav-item" data-page="categories">
+        <i class="fas fa-tags"></i> Categories & Tags
+      </a>
+      <a href="#" class="nav-item" data-page="settings">
+        <i class="fas fa-cog"></i> Site Settings
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="../index.html" class="nav-item nav-site-link">
+        <i class="fas fa-external-link-alt"></i> View Site
+      </a>
+      <button class="btn-logout" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Area -->
+  <div class="admin-main">
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      <div class="topbar-actions">
+        <span class="admin-user"><i class="fas fa-user-circle"></i> <span id="adminUsername">Admin</span></span>
+      </div>
+    </header>
+
+    <!-- Page Contents -->
+    <div class="admin-content" id="adminContent">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD/EDIT MODAL ===== -->
+<div class="modal-overlay" id="contentModal" onclick="closeContentModal(event)">
+  <div class="modal-box" id="contentModalBox">
+    <div class="modal-header">
+      <h3 id="modalFormTitle">Add New Content</h3>
+      <button class="modal-close-btn" onclick="closeContentModalBtn()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="contentForm">
+        <input type="hidden" id="editItemId" />
+
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Title *</label>
+            <input type="text" id="f_title" placeholder="Movie / Series Title" required />
+          </div>
+          <div class="form-group full">
+            <label>Poster URL *</label>
+            <div class="poster-input-wrap">
+              <input type="url" id="f_poster" placeholder="https://..." />
+              <div class="poster-preview">
+                <img id="posterPreviewImg" src="https://placehold.co/80x112/1a1a2e/666?text=Preview" alt="Poster Preview" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Type *</label>
+            <select id="f_type" required>
+              <option value="movie">🎬 Movie</option>
+              <option value="series">📺 Series</option>
+              <option value="anime">🐉 Anime</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Language *</label>
+            <select id="f_language" required>
+              <option value="bangla">🇧🇩 Bangla</option>
+              <option value="hindi">🇮🇳 Hindi</option>
+              <option value="english">🇺🇸 English</option>
+              <option value="dual">🌐 Dual Audio</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quality</label>
+            <select id="f_quality">
+              <option value="WEB-DL">WEB-DL</option>
+              <option value="4K uHDRip">4K uHDRip</option>
+              <option value="4K WEB-DL">4K WEB-DL</option>
+              <option value="HDTC">HDTC</option>
+              <option value="BluRay">BluRay</option>
+              <option value="CAM">CAM</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="f_status">
+              <option value="ongoing">⏳ Ongoing</option>
+              <option value="completed">✅ Completed</option>
+              <option value="upcoming">🔜 Upcoming</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Year</label>
+            <input type="number" id="f_year" placeholder="2026" min="1900" max="2100" />
+          </div>
+          <div class="form-group">
+            <label>Rating (0-10)</label>
+            <input type="number" id="f_rating" placeholder="8.5" min="0" max="10" step="0.1" />
+          </div>
+          <div class="form-group">
+            <label>Views</label>
+            <input type="text" id="f_views" placeholder="e.g. 12.5K" />
+          </div>
+          <div class="form-group">
+            <label>Episodes</label>
+            <input type="text" id="f_episodes" placeholder="S01 Ep 1-12 / null for movies" />
+          </div>
+          <div class="form-group full">
+            <label>Description</label>
+            <textarea id="f_desc" rows="3" placeholder="Short description of the content..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Genres (comma separated)</label>
+            <input type="text" id="f_genre" placeholder="action, drama, thriller" />
+          </div>
+          <div class="form-group">
+            <label>Tags (comma separated)</label>
+            <input type="text" id="f_tags" placeholder="WEB-DL, Dual Audio, Hindi ORG" />
+          </div>
+          <div class="form-group">
+            <label>Added Date</label>
+            <input type="date" id="f_date" />
+          </div>
+        </div>
+
+        <!-- Toggle flags -->
+        <div class="toggle-flags">
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <span><i class="fas fa-thumbtack"></i> Pinned</span>
+              <div class="toggle-switch">
+                <input type="checkbox" id="f_pinned" />
+                <span class="toggle-track"></span>
+              </div>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <span><i class="fas fa-star"></i> Featured</span>
+              <div class="toggle-switch">
+                <input type="checkbox" id="f_featured" />
+                <span class="toggle-track"></span>
+              </div>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <span><i class="fas fa-microphone"></i> Dubbed</span>
+              <div class="toggle-switch">
+                <input type="checkbox" id="f_dubbed" />
+                <span class="toggle-track"></span>
+              </div>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <label class="toggle-label">
+              <span><i class="fas fa-eye"></i> Visible</span>
+              <div class="toggle-switch">
+                <input type="checkbox" id="f_visible" checked />
+                <span class="toggle-track"></span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeContentModalBtn()">Cancel</button>
+          <button type="submit" class="btn-save"><i class="fas fa-save"></i> Save Content</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="confirm-modal" id="confirmModal" style="display:none">
+  <div class="confirm-box">
+    <div class="confirm-icon"><i class="fas fa-trash-alt"></i></div>
+    <h3>Delete Content?</h3>
+    <p>This action cannot be undone. Are you sure?</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-confirm-delete" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="admin-toast" id="adminToast"></div>
+
+<script src="../js/data.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
